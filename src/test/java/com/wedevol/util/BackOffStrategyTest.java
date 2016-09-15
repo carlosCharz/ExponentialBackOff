@@ -13,6 +13,7 @@ import com.wedevol.util.BackOffStrategy;
 
 public class BackOffStrategyTest {
 
+	public static final int DEFAULT_RETRIES = 3;
 	private BackOffStrategy backoff;
 	private BackEndSimulator backend;
 
@@ -58,7 +59,7 @@ public class BackOffStrategyTest {
 				}
 			}
 		}
-		assertEquals("Unsuccessful calls", 5, counter);
+		assertEquals("Unsuccessful calls", DEFAULT_RETRIES, counter);
 	}
 
 	@Test
