@@ -88,6 +88,7 @@ public class BackOffStrategyTest {
 				backend.unsuccessfulRegistrationToDataBase();
 			} catch (Exception e) {
 				try {
+					System.out.println("Error!");
 					backoff.errorOccured();
 				} catch (Exception e2) {
 					System.out.println(e2);
@@ -100,7 +101,7 @@ public class BackOffStrategyTest {
 }
 
 /**
- * Back off simulator class used for testing purposes
+ * Back end simulator class used for testing purposes
  */
 
 class BackEndSimulator {

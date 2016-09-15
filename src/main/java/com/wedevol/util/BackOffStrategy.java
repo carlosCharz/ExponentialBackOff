@@ -43,7 +43,7 @@ public class BackOffStrategy {
 		}
 		waitUntilNextTry();
 		timeToWait *= 2;
-		// we add a random time (google recommendation)
+		// we add a random time (recommendation from google)
 		timeToWait += random.nextInt(500);
 	}
 
