@@ -3,9 +3,11 @@ package com.wedevol.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.*;
-
-import com.wedevol.util.BackOffStrategy;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Test for the backoff strategy
@@ -13,13 +15,17 @@ import com.wedevol.util.BackOffStrategy;
 
 public class BackOffStrategyTest {
 
-	public static final int DEFAULT_RETRIES = 3;
+	private static final int SUCCESSFUL_ATTEMPT = 1;
+	public static final int DEFAULT_RETRIES = 2;
+	private static final long DEFAULT_WAIT_TIME_IN_MILLI = 500;
+	private static BackEndSimulator backend;
+
 	private BackOffStrategy backoff;
-	private BackEndSimulator backend;
 
 	// Run once, e.g. Database connection, connection pool
 	@BeforeClass
 	public static void runOnceBeforeClass() {
+		backend = new BackEndSimulator();
 	}
 
 	// Run once, e.g close connection, cleanup
@@ -29,20 +35,51 @@ public class BackOffStrategyTest {
 
 	// e.g. Creating a similar object and share for all @Test
 	@Before
-	public void runBeforeTestMethod() {
-		backoff = new BackOffStrategy();
-		backend = new BackEndSimulator();
+	public void setUp() {
+		backoff = new BackOffStrategy(DEFAULT_RETRIES, DEFAULT_WAIT_TIME_IN_MILLI);
 	}
 
 	// Should rename to @AfterTestMethod
 	@After
-	public void runAfterTestMethod() {
+	public void tearDown() {
 	}
 
 	@Test
 	public void testSuccessfulRegistration() throws Exception {
 		Boolean flag = backend.successfulRegistrationToDataBase();
 		assertEquals("Successful call", true, flag);
+	}
+
+	@Test
+	public void testSuccessfulCallNotContinueLooping() throws Exception {
+		int counter = 0;
+		while (backoff.shouldRetry()) {
+			try {
+				counter++;
+				backend.successfulRegistrationToDataBase();
+				backoff.doNotRetry();
+			} catch (Exception e) {
+				backoff.errorOccured();
+			}
+		}
+		assertEquals("Successfull attempt", SUCCESSFUL_ATTEMPT, counter);
+	}
+
+	@Test
+	public void testMaximumUnsuccessfulCallsWhenErrorWithExceptionType() {
+		int counter = 0;
+		while (backoff.shouldRetry()) {
+			try {
+				counter++;
+				backend.unsuccessfulRegistrationToDataBase();
+			} catch (Exception e) {
+				try {
+					backoff.errorOccured2();
+				} catch (Exception e2) {
+				}
+			}
+		}
+		assertEquals("Unsuccessful calls", DEFAULT_RETRIES, counter);
 	}
 
 	@Test
@@ -53,10 +90,7 @@ public class BackOffStrategyTest {
 				counter++;
 				backend.unsuccessfulRegistrationToDataBase();
 			} catch (Exception e) {
-				try {
-					backoff.errorOccured();
-				} catch (Exception e2) {
-				}
+				backoff.errorOccured();
 			}
 		}
 		assertEquals("Unsuccessful calls", DEFAULT_RETRIES, counter);
@@ -64,32 +98,27 @@ public class BackOffStrategyTest {
 
 	@Test
 	public void testTimeIncreaseDuringUnsuccessfulCalls() {
-		backoff.reset();
 		long prev = backoff.getTimeToWait();
-		assertEquals("Default time is 1 seg", 1000, prev);
+		assertEquals("Default time is 1 seg", 500, prev);
 		while (backoff.shouldRetry()) {
 			try {
 				backend.unsuccessfulRegistrationToDataBase();
 			} catch (Exception e) {
-				try {
-					backoff.errorOccured();
-					assertTrue("Time is increasing exponentially", backoff.getTimeToWait() > prev);
-				} catch (Exception e2) {
-				}
+				backoff.errorOccured();
+				assertTrue("Time is increasing exponentially", backoff.getTimeToWait() > prev);
 			}
 		}
 	}
 
 	@Test(expected = Exception.class)
 	public void testExceptionIsThrownWhenReachedMaximumUnsuccessfulCalls() throws Exception {
-		backoff.reset();
 		while (backoff.shouldRetry()) {
 			try {
 				backend.unsuccessfulRegistrationToDataBase();
 			} catch (Exception e) {
 				try {
 					System.out.println("Error!");
-					backoff.errorOccured();
+					backoff.errorOccured2();
 				} catch (Exception e2) {
 					System.out.println(e2);
 					throw e2;

@@ -35,7 +35,7 @@ public class BackOffStrategy {
 		return numberOfTriesLeft > 0;
 	}
 
-	public void errorOccured() throws Exception {
+	public void errorOccured2() throws Exception {
 		numberOfTriesLeft--;
 		if (!shouldRetry()) {
 			throw new Exception("Retry Failed: Total of attempts: " + numberOfRetries + ". Total waited time: "
@@ -44,6 +44,18 @@ public class BackOffStrategy {
 		waitUntilNextTry();
 		timeToWait *= 2;
 		// we add a random time (recommendation from google)
+		timeToWait += random.nextInt(500);
+	}
+
+	public void errorOccured() {
+		numberOfTriesLeft--;
+		if (!shouldRetry()) {
+			System.out.println("Retry Failed: Total of attempts: " + numberOfRetries + ". Total waited time: "
+					+ timeToWait + "ms.");
+		}
+		waitUntilNextTry();
+		timeToWait *= 2;
+		// we add a random time (google recommendation)
 		timeToWait += random.nextInt(500);
 	}
 
@@ -60,8 +72,14 @@ public class BackOffStrategy {
 	}
 
 	/**
-	 * Reset back off state. Call this method after successful attempts if you
-	 * want to reuse the class.
+	 * Use this method when the call was successful otherwise it will continue in an infinite loop
+	 */
+	public void doNotRetry() {
+		numberOfTriesLeft = 0;
+	}
+
+	/**
+	 * Reset back off state. Call this method after successful attempts if you want to reuse the class.
 	 */
 	public void reset() {
 		this.numberOfTriesLeft = numberOfRetries;
