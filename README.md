@@ -14,20 +14,20 @@ This was my base class for the implementation of:
 * A backend webservice with retry logic
 * XMPP Connection Server for FCM(Firebase Cloud Messaging)
 
-##Technology used
+## Technology used
 
  * Java 8
  * JUnit
  * Maven
  
 
-##About me
+## About me
 I am Carlos Becerra, a very passionate developer. You can contact me via:
 
 * [Google+](https://plus.google.com/+CarlosBecerraRodr%C3%ADguez)
 * [Twitter](https://twitter.com/CarlosBecerraRo)
 
-##License
+## License
 ```javas
 Copyright 2016 Carlos Becerra
 
