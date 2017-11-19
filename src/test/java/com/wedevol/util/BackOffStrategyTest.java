@@ -116,13 +116,8 @@ public class BackOffStrategyTest {
 			try {
 				backend.unsuccessfulRegistrationToDataBase();
 			} catch (Exception e) {
-				try {
-					System.out.println("Error!");
-					backoff.errorOccured2();
-				} catch (Exception e2) {
-					System.out.println(e2);
-					throw e2;
-				}
+				System.out.println("Error!");
+				backoff.errorOccured2();
 			}
 		}
 	}
