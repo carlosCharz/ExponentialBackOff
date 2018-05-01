@@ -63,7 +63,7 @@ public class BackOffStrategy {
 		try {
 			Thread.sleep(timeToWait);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+		    System.out.println("Error waiting until next try for the backoff strategy. Error: " + e.getMessage());
 		}
 	}
 
