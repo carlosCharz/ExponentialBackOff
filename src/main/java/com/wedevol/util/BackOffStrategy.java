@@ -8,8 +8,8 @@ import java.util.Random;
 
 public class BackOffStrategy {
 
-	public static final int DEFAULT_RETRIES = 3;
-	public static final long DEFAULT_WAIT_TIME_IN_MILLI = 1000;
+	private static final int DEFAULT_RETRIES = 3;
+	private static final long DEFAULT_WAIT_TIME_IN_MILLI = 1000;
 
 	private int numberOfRetries;
 	private int numberOfTriesLeft;
