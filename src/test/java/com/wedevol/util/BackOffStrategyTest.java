@@ -5,6 +5,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -40,6 +41,7 @@ public class BackOffStrategyTest {
     public void tearDown() {}
 
     @Test
+    @DisplayName("Test successful registration")
     public void testSuccessfulRegistration() throws Exception {
         Boolean flag = backend.successfulRegistrationToDataBase();
         Assertions.assertTrue(flag, "Successful call");
