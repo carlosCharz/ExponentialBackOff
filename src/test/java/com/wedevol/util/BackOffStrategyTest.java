@@ -123,7 +123,6 @@ public class BackOffStrategyTest {
 
 }
 
-
 /**
  * Back end simulator class used for testing purposes
  */
