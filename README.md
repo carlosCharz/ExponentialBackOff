@@ -17,8 +17,8 @@ This was my base class for the implementation of:
 ## Technology used
 
  * Java 8
- * JUnit
- * Maven
+ * JUnit 5
+ * Maven 3.6.x
  
 
 ## About me
@@ -29,7 +29,7 @@ I am Carlos Becerra, a very passionate developer. You can contact me via:
 
 ## License
 ```javas
-Copyright 2016 Carlos Becerra
+Copyright 2020 Carlos Becerra
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
